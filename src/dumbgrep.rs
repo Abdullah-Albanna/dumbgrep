@@ -50,8 +50,8 @@ pub fn run(config: &Config) -> Result<(), String> {
 
     let matches = get_match(&config.query, &file_content);
 
-    for (line, text) in &matches {
-        println!("\n{}: {}\n\n", line, text);
+    for (_, text) in &matches {
+        println!("\n{}\n\n", text);
     }
 
     Ok(())
@@ -68,9 +68,12 @@ fn get_match(query: &str, content: &str) -> BTreeMap<usize, String> {
 
     for (i, item) in content.lines().enumerate() {
         if item.contains(query) {
-            // replaces the query text to be colored
+            // replaces the query and th text to be colored
             let colored_item = item.replace(query, &format!("\x1b[1;31m{}\x1b[0m", query).as_str());
-            found_lines.insert(i, colored_item);
+            let colored_index = format!("\x1b[1;32m{}\x1b[0m", i + 1);
+
+            let full_item = format!("{}: {}", colored_index, colored_item);
+            found_lines.insert(i + 1, full_item);
         }
     }
 
